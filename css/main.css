@@ -1,0 +1,53 @@
+body .deck-container {
+  width: 90%;
+  height: 100%;
+  font-size: 16px;
+}
+.no-boxshadow body .deck-container {
+  border: 1px solid #e4e4e4;
+}
+.boxshadow body .deck-container {
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.theme-menu {
+  display: none;
+  float: left;
+  color: #888;
+  border-left: 1px solid #555;
+  border-right: 1px solid #555;
+  line-height: 32px;
+  height: 32px;
+  font-family: sans-serif;
+  padding-right: 15px;
+  margin-left: 15px;
+}
+.js .theme-menu {
+  display: block;
+}
+.theme-menu label {
+  font-size: 12px;
+  vertical-align: baseline;
+  margin: 0 4px 0 15px;
+}
+
+.slide ul,
+.slide ol {
+		font-size: 2em;
+		padding-left: 0.2em;
+}
+.slide p {
+		font-size: 2em;
+}
+
+@media print {
+  header, footer {
+    display: none !important;
+  }
+
+  body .deck-container {
+    font-size: 1.25em;
+  }
+}

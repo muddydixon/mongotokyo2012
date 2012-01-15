@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>mongo-hadoopで始める大規模ログ解析 〜低コストへの新たな道〜</title>
+    <link href="./deck.js/core/deck.core.css" type="text/css" rel="stylesheet" media="Screen,projection" />
+
+
+    <link href="./deck.js/extensions/goto/deck.goto.css" type="text/css" rel="stylesheet" />
+    <link href="./deck.js/extensions/menu/deck.menu.css" type="text/css" rel="stylesheet" />
+    <link href="./deck.js/extensions/navigation/deck.navigation.css" type="text/css" rel="stylesheet" />
+    <link href="./deck.js/extensions/status/deck.status.css" type="text/css" rel="stylesheet" />
+    <link href="./deck.js/extensions/hash/deck.hash.css" type="text/css" rel="stylesheet" />
+
+		<link rel="stylesheet" id="style-theme-link" href="./deck.js/themes/style/swiss.css">
+		<link rel="stylesheet" id="transition-theme-link" href="./deck.js/themes/transition/horizontal-slide.css">
+		
+		<link rel="stylesheet" href="./css/common.css">
+		<link rel="stylesheet" href="./css/main.css">
+
+    <script type="text/javascript" src="./js/modernizr.custom.js"></script>
+		
+    <link href="./shjs/sh_style.css" type="text/css" rel="stylesheet" />
+	</head>
+	<body>
+		<article class="deck-container">
+			<section class="slide" id="title-slide">
+				<h1 style="text-align:left; font-size: 4.0em">
+					mongo-hadoopで始める大規模ログ解析<br />〜低コストへの新たな道〜<br />
+					BigData Analysis with mongo-hadoop
+				</h1>
+				<h3>
+					MongoDB Tokyo 2012<br />January 18th Tokyo, Japan
+				</h3>
+			</section>
+
+			<section class="slide" id="myself">
+				<h2>自己紹介/myself</h2>
+				<ul>
+					<li>@muddydixon</li>
+					<li>id:muddydixon</li>
+				</ul>
+				<h3>大学/大学院</h3>
+				<ul>
+					<li>自然言語処理：形態素列検索・置換システム</li>
+					<li>言語発達の計算機シミュレーション(ElmanNet+SOMみたいな)</li>
+				</ul>
+				<h3>就職</h3>
+				<ul>
+					<li>検索エンジン(の広告最適化とか</li>
+					<li>コンテンツマッチエンジンの設計開発とか</li>
+					<li><a href="http://twitter.com/nifty_engineer">エンジニアサポート</a>の中の人とか</li>
+					<li>データマイニング部門(←<span style="color:red;">NEW 部門ができたよ！</span>)</li>
+				</ul>
+			</section>
+			
+			<section class="slide">
+				<h1>ログの解析好きですか？<br>ログの解析していますか？</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>解析部門の価値認られていますか？<br>解析部門の人は足りていますか？</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>SPOF？<br>Daemon管理？<br>クラスタ管理？</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>勘弁して下さい &gt; &lt; </h1>
+			</section>
+			
+			<section class="slide">
+				<h1>Hadoop?</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>Namenode<br>SecondaryNameNode<br>Datanode<br>TaskTracker<br>JobTracker<br>Daemonのお守り<br>DRBDの構築</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>俺、涙目<br>つД`)</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>hive</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>あいつの結果待ってたら<br>2分とかザラに待つんですけど・・・</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>☆ﾁﾝ　☆ﾁﾝ<br>＼＿／＼＼（　・∀・）＜　 まだー？ </h1>
+			</section>
+			
+			<section class="slide">
+				<h1>Schema変えるのも・・・</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>HBase?</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>HBase<br>ZooKeeper</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>｡･ﾟ･(ﾉД`)･ﾟ･｡ ｳﾜｧｧｧｧｧﾝ</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>これ以上のDaemonのお守りは<br>勘弁して下さい!!</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>そんな<br><span style="font-size: 16pt">"muddydixon"を含む</span><br>孤独で忙しく賢くない<br>解析担当者に贈りたい</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>Mongo-Hadoopな生活</h1>
+			</section>
+			
+			<section class="slide">
+				<h1 style="font-size: 20pt">※ 多分に私見が混ざっています</h1>
+			</section>
+			
+			<section class="slide" id="contents">
+				<h2>Contents</h2>
+				<ol>
+					<li>MongoDB</li>
+					<li>Hadoop</li>
+					<li>mongo-hadoop</li>
+					<li>Architecture</li>
+					<li>mapReduce</li>
+					<li>Pros./Cons.</li>
+					<li>Tips</li>
+				</ol>
+			</section>
+			
+			<section class="slide">
+				<h2>MongoDB</h2>
+				<h3>Cons</h3>
+				<ul>
+					<li>OOM in Map/Reduce</li>
+					<li>Rich Resources (memory / disc)</li>
+				</ul>
+				<h3>Pros</h3>
+				<ul>
+					<li>Schemaless</li>
+					<li>Full Index</li>
+					<li>Replication & High Availability</li>
+					<li>Auto Sharding</li>
+				</ul>
+			</section>
+			
+			<section class="slide">
+				<h2>Hadoop</h2>
+				<h3>Cons</h3>
+				<ul>
+					<li>Difficulty in Operation</li>
+					<li>Many Daemons</li>
+					<li>HBase needs more Daemons</li>
+					<li>hive spends much time</li>
+				</ul>
+				<h3>Pros</h3>
+				<ul>
+					<li>Scaleout</li>
+					<li>Calculate Large Data by Map/Reduce</li>
+					<li>Scalable FileSystem (HDFS) supported</li>
+				</ul>
+			</section>
+			
+			<section class="slide">
+				<h2>We want</h2>
+				<ul>
+					<li>Calculate Large Data Easily (No OOM Killer)</li>
+					<li>No more Daemons</li>
+					<li>No more non-"Healthy" State</li>
+					<li>Find data in a moment (we use REST API)</li>
+				</ul>
+			</section>
+			
+			<section class="slide">
+				<h2>in MongoDB and Hadoop</h2>
+				<h3>MongoDB</h3>
+				<ul>
+					<li>Difficult Calculating Large Data </li>
+				</ul>
+				<h3>Hadoop</h3>
+				<ul>
+					<li>Too much Daemons</li>
+					<li>Often not "Healthy" warning</li>
+					<li>Cannot Find data in a moment (HBase is too difficalt to operate)</li>
+				</ul>
+			</section>
+			
+			<section class="slide">
+				<h1>mongo-hadoop</h1>
+			</section>
+			
+			<section class="slide">
+				<h2><a href="https://github.com/mongodb/mongo-hadoop">mongo-hadoop</a></h2>
+				<h3>What?</h3>
+				<p>mongo-hadoop is Adapter. It enables Hadoop to access MongoDB data.</p>
+				<p>mongo-hadoop supports shards and chunks enviromnent ... ?</p>
+				<img src="./images/mongo-hadoop.png">
+			</section>
+
+			<section class="slide">
+				<h1>mongo-hadoop...<br>
+					not supported multiple-sharding key</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>Pull Request...</h1>
+				<img src="./images/pullrequest.png"/>
+			</section>
+			
+			<section class="slide">
+				<h1>Merged!<br>mongo-hadoop supported <br> shards and chunks environment.</h1>
+				<img src="./images/pullrequestRes.png"/>
+			</section>
+			
+			<section class="slide">
+				<h2>Sample</h2>
+				<h3>Driver</h3>
+				<pre class="sh_java">MongoConfigUtil.setInputURI( conf, "mongodb://localhost/test.in" ); // set input host, db, collection
+MongoConfigUtil.setOutputURI( conf, "mongodb://localhost/test.out" ); // set output host, db, collection</pre>
+				<h3>Mapper</h3>
+				<pre class="sh_java">public void map( Object key, BSONObject value, Context context ) throws IOException, InterruptedException{
+  // get pair consisted of Object key and BSONObject value in MongoDB document</pre>
+			</section>
+			
+			<section class="slide">
+				<h2>we gotta in mongo-hadoop</h2>
+				<h3><s>MongoDB</s> Hadoop</h3>
+				<ul>
+					<li><s>not</s> Easy Calculate Large Data</li>
+				</ul>
+				<h3><s>Hadoop</s> MongoDB</h3>
+				<ul>
+					<li><s>Too much</s> Limited Daemons</li>
+					<li><s>Often not "Healthy" warning</s> Replica set and sharding</li>
+					<li><s>Cannot</s> Can Find data in a moment <s>(HBase is too difficalt to operate)</s></li>
+				</ul>
+			</section>
+			
+			<section class="slide">
+				<h2>Pros./Cons. in Mongo-Hadoop Architecture</h2>
+				<h3>Pros.</h3>
+				<ul>
+					<li>No SPOF by MongoDB. No Tortures of daemon management</li>
+					<li>Find data in a moment by MongoDB Query</li>
+					<li>Calculate Large Data by Hadoop Map/Reduce</li>
+					<li>Hadoop is rather "Large Data calculator" than "Large Data Storage". Monitering does not bother us.</li>
+					<li>Calculated Data is pre-filtered by MongoDB Query brefore Hadoop Map/Reduce.</li>
+				</ul>
+				<h3>Cons.</h3>
+				<ul>
+					<li>Rich Disk and Memory</li>
+					<li>In comparison to Hadoop HDFS, mongo-hadoop Map/Reduce is Low Performance. </li>
+				</ul>
+			</section>
+			
+			<section class="slide">
+				<h2>Tips</h2>
+				<h3>in mongo-hadoop, Calculated Data filtered before Hadoop Map/Reduce</h3>
+				<ul>
+					<li>The performance of mongo-hadoop's Map/Reduce is lower than Hadoop Map/Reduce.</li>
+					<li>In mongo-hadoop data is pre-filtered by MongoDB Query.</li>
+					<li>Thus, Hadoop Mapper Jobs do processes for less number of record (document).</li>
+				</ul>
+				<h3>BSON Decoder in mongo-java-driver</h3>
+				<ul>
+					<li>mongo-hadoop pays cost for BSON Decoding.</li>
+					<li>It is not small to calculate billion documents.</li>
+				</ul>
+			</section>
+			<section class="slide">
+				<h2>Tips</h2>
+				<h3>Restricted Field improves Performance</h3>
+				<ul>
+					<li>Above reason, the smaller size of BSON document is, the faster BSONDecoder decode the BSON document</li>
+					<li>To restrict field of document is good to improve performance.</li>
+				</ul>
+				<h3>Reducer Class is also used Combiner Class</h3>
+				<ul>
+					<li>make reducer class extends <br>Reducer&lt;BSONObject, BSONWritable, BSONObject, BSONWritable&gt; </li>
+					<li>we use it also as a combiner class.</li>
+				</ul>
+			</section>
+
+			<section class="slide">
+				<h2>Conclusion</h2>
+				<ul>
+					<li>No More Daemons</li>
+					<li>Hadoop is only Large Data Computer</li>
+					<li>We gotta both REST API and Large Data Mining System</li>
+				</ul>
+			</section>
+			
+			<section class="slide">
+				<h2>宣伝</h2>
+				<!--<iframe style="width: 100%; height:600px;" src="http://cloud.nifty.com/feature/"></iframe>-->
+			</section>
+			<section class="slide">
+				<h1>「ユーザの生活を楽しくする」<br>「より楽しくお金を払ってもらえる」<br>「ビジネスを加速させる」<br>DataMiner/DataScientist<br>を募集しています。<br><br>つ <a href="http://twitter.com/#!/muddydixon">@muddydixon</a></h2>
+			</section>
+			<a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+			<a href="#" class="deck-next-link" title="Next">&#8594;</a>
+			<p class="deck-status">
+				<span class="deck-status-current"></span>/<span class="deck-status-total"></span>
+			</p>
+		</article>
+ 		<footer>
+ 			(c) muddydixon [at] gmail.com
+ 		</footer>
+		
+    <script type="text/javascript" src="./js/jquery-1.7.min.js"></script>
+    <script type="text/javascript" src="./deck.js/core/deck.core.js"></script>
+    <script type="text/javascript" src="./deck.js/extensions/goto/deck.goto.js"></script>
+    <script type="text/javascript" src="./deck.js/extensions/hash/deck.hash.js"></script>
+    <script type="text/javascript" src="./deck.js/extensions/navigation/deck.navigation.js"></script>
+    <script type="text/javascript" src="./deck.js/extensions/menu/deck.menu.js"></script>
+		
+    <script type="text/javascript" src="./shjs/sh_main.min.js"></script>
+    <script type="text/javascript" src="./shjs/lang/sh_javascript_dom.min.js"></script>
+    <script type="text/javascript" src="./shjs/lang/sh_html.min.js"></script>
+    <script type="text/javascript" src="./shjs/lang/sh_sh.min.js"></script>
+    <script type="text/javascript" src="./shjs/lang/sh_java.min.js"></script>
+    <script type="text/javascript" src="./shjs/lang/sh_css.min.js"></script>
+    <script type="text/javascript" src="./js/main.js"></script>
+	</body>
+</html>
