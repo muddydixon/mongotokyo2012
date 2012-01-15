@@ -24,7 +24,7 @@
 	</head>
 	<body>
 		<article class="deck-container">
-			<section class="slide" id="title-slide">
+			<section class="slide">
 				<h1 style="text-align:left; font-size: 4.0em">
 					mongo-hadoopで始める大規模ログ解析<br />〜低コストへの新たな道〜<br />
 					BigData Analysis with mongo-hadoop
@@ -32,10 +32,12 @@
 				<h3>
 					MongoDB Tokyo 2012<br />January 18th Tokyo, Japan
 				</h3>
+				<h3 style="font-size: 2em; text-align: right; margin-top:600px;">Daichi Morifuji/muddydixon<br>ニフティ株式会社/NIFTY</h3>
 			</section>
 
-			<section class="slide" id="myself">
+			<section class="slide">
 				<h2>自己紹介/myself</h2>
+				<img style="float: right; " src="https://twimg0-a.akamaihd.net/profile_images/1140591072/27366_619217309_3444_q.jpg" alt="muddydixon" />
 				<ul>
 					<li>@muddydixon</li>
 					<li>id:muddydixon</li>
@@ -50,7 +52,7 @@
 					<li>検索エンジン(の広告最適化とか</li>
 					<li>コンテンツマッチエンジンの設計開発とか</li>
 					<li><a href="http://twitter.com/nifty_engineer">エンジニアサポート</a>の中の人とか</li>
-					<li>データマイニング部門(←<span style="color:red;">NEW 部門ができたよ！</span>)</li>
+					<li>データマイニング部門(←<span class="red">NEW 部門ができたよ！</span>)</li>
 				</ul>
 			</section>
 			
@@ -59,71 +61,45 @@
 			</section>
 			
 			<section class="slide">
-				<h1>解析部門の価値認られていますか？<br>解析部門の人は足りていますか？</h1>
+				<h1>正直、大企業じゃないときついっす</h1>
 			</section>
 			
 			<section class="slide">
-				<h1>SPOF？<br>Daemon管理？<br>クラスタ管理？</h1>
+				<h1>リソース・知識も無いし</h1>
 			</section>
 			
 			<section class="slide">
-				<h1>勘弁して下さい &gt; &lt; </h1>
+				<h1><s>@doryokujin さんがどうかしてる</s><br>「#doryokujinnero」なんてタグが生まれるくらいじゃないと厳しい</h1>
 			</section>
 			
 			<section class="slide">
-				<h1>Hadoop?</h1>
+				<h1>一般人が死なない範囲で、ログを解析したりするシステムを頑張ってみた！</h1>
 			</section>
 			
 			<section class="slide">
-				<h1>Namenode<br>SecondaryNameNode<br>Datanode<br>TaskTracker<br>JobTracker<br>Daemonのお守り<br>DRBDの構築</h1>
+				<h1>Requeirements</h1>
 			</section>
 			
 			<section class="slide">
-				<h1>俺、涙目<br>つД`)</h1>
+				<h2>Functional Requeirements</h2>
+				<ul>
+					<li>Ad hoc query for <span class="red">API</span></li>
+					<li>OLAP for <span class="red">survay</span></li>
+					<li>Distributed Processing <span class="red">bigdata analysis</span></li>
+				</ul>
 			</section>
 			
 			<section class="slide">
-				<h1>hive</h1>
+				<h2>Non-Functional Requeirements</h2>
+				<ul>
+					<li>Easily Works for <span class="red">non-big company</span></li>
+					<li>Easy maintenance to some degree for <span class="red">non-experts</span></li>
+					<li>Not Data loss for <span class="red">non-holiday works</span></li>
+				</ul>
 			</section>
 			
 			<section class="slide">
-				<h1>あいつの結果待ってたら<br>2分とかザラに待つんですけど・・・</h1>
-			</section>
-			
-			<section class="slide">
-				<h1>☆ﾁﾝ　☆ﾁﾝ<br>＼＿／＼＼（　・∀・）＜　 まだー？ </h1>
-			</section>
-			
-			<section class="slide">
-				<h1>Schema変えるのも・・・</h1>
-			</section>
-			
-			<section class="slide">
-				<h1>HBase?</h1>
-			</section>
-			
-			<section class="slide">
-				<h1>HBase<br>ZooKeeper</h1>
-			</section>
-			
-			<section class="slide">
-				<h1>｡･ﾟ･(ﾉД`)･ﾟ･｡ ｳﾜｧｧｧｧｧﾝ</h1>
-			</section>
-			
-			<section class="slide">
-				<h1>これ以上のDaemonのお守りは<br>勘弁して下さい!!</h1>
-			</section>
-			
-			<section class="slide">
-				<h1>そんな<br><span style="font-size: 16pt">"muddydixon"を含む</span><br>孤独で忙しく賢くない<br>解析担当者に贈りたい</h1>
-			</section>
-			
-			<section class="slide">
-				<h1>Mongo-Hadoopな生活</h1>
-			</section>
-			
-			<section class="slide">
-				<h1 style="font-size: 20pt">※ 多分に私見が混ざっています</h1>
+				<h1>All for healthy sleeping</h1>
 			</section>
 			
 			<section class="slide" id="contents">
@@ -143,7 +119,7 @@
 				<h2>MongoDB</h2>
 				<h3>Cons</h3>
 				<ul>
-					<li>OOM in Map/Reduce</li>
+					<li>OOM occurs in Map/Reduce</li>
 					<li>Rich Resources (memory / disc)</li>
 				</ul>
 				<h3>Pros</h3>
@@ -159,7 +135,7 @@
 				<h2>Hadoop</h2>
 				<h3>Cons</h3>
 				<ul>
-					<li>Difficulty in Operation</li>
+					<li>Difficulty in Operation / Tuning</li>
 					<li>Many Daemons</li>
 					<li>HBase needs more Daemons</li>
 					<li>hive spends much time</li>
@@ -173,20 +149,31 @@
 			</section>
 			
 			<section class="slide">
-				<h2>We want</h2>
+				<h2>Requeirements again</h2>
 				<ul>
-					<li>Calculate Large Data Easily (No OOM Killer)</li>
-					<li>No more Daemons</li>
-					<li>No more non-"Healthy" State</li>
-					<li>Find data in a moment (we use REST API)</li>
+					<li>Ad hoc query for <span class="red">API</span></li>
+					<li>OLAP for <span class="red">survay</span></li>
+					<li>Distributed Processing <span class="red">bigdata analysis</span></li>
+					<li>Easily Works for <span class="red">non-big company</span></li>
+					<li>Easy maintenance to some degree for <span class="red">non-experts</span></li>
+					<li>Not Data loss for <span class="red">non-holiday works</span></li>
 				</ul>
 			</section>
 			
 			<section class="slide">
-				<h2>in MongoDB and Hadoop</h2>
+				<h2>and we want</h2>
+				<ul>
+					<li>Calculate Large Data Easily (No OOM Killer)</li>
+					<li>No more Daemons</li>
+					<li>No more non-"Healthy" State</li>
+				</ul>
+			</section>
+
+			<section class="slide">
+				<h2>Cons. in MongoDB vs. Hadoop</h2>
 				<h3>MongoDB</h3>
 				<ul>
-					<li>Difficult Calculating Large Data </li>
+					<li>Difficulty in Calculating Large Data</li>
 				</ul>
 				<h3>Hadoop</h3>
 				<ul>
@@ -199,30 +186,14 @@
 			<section class="slide">
 				<h1>mongo-hadoop</h1>
 			</section>
-			
 			<section class="slide">
 				<h2><a href="https://github.com/mongodb/mongo-hadoop">mongo-hadoop</a></h2>
 				<h3>What?</h3>
 				<p>mongo-hadoop is Adapter. It enables Hadoop to access MongoDB data.</p>
-				<p>mongo-hadoop supports shards and chunks enviromnent ... ?</p>
+				<p>mongo-hadoop supports shards and chunks enviromnent</p>
 				<img src="./images/mongo-hadoop.png">
 			</section>
 
-			<section class="slide">
-				<h1>mongo-hadoop...<br>
-					not supported multiple-sharding key</h1>
-			</section>
-			
-			<section class="slide">
-				<h1>Pull Request...</h1>
-				<img src="./images/pullrequest.png"/>
-			</section>
-			
-			<section class="slide">
-				<h1>Merged!<br>mongo-hadoop supported <br> shards and chunks environment.</h1>
-				<img src="./images/pullrequestRes.png"/>
-			</section>
-			
 			<section class="slide">
 				<h2>Sample</h2>
 				<h3>Driver</h3>
@@ -247,51 +218,105 @@ MongoConfigUtil.setOutputURI( conf, "mongodb://localhost/test.out" ); // set out
 				</ul>
 			</section>
 			
+			<!--
+					1. mongo-hadoop architecture
+					2. mongo-hadoop sample
+					3. mongo-hadoop merit
+					  3.1 Maintenance
+						3.2 Combinator
+						3.3 mongodb-derived BSON:
+					4. hadongo
+					  4.1 general driver
+						4.2 general mapper
+						4.3 combinator
+				-->
 			<section class="slide">
-				<h2>Pros./Cons. in Mongo-Hadoop Architecture</h2>
-				<h3>Pros.</h3>
+				<h1>Advance</h1>
+			</section>
+			
+			<section class="slide">
+				<h2>hadongo (not public)</h2>
+				<p>
+					Using hadongo library, we can summarize like that
+				</p>
+				<pre classs="sh_sh">hadoop jar hodongo com.nifty.hadongo.HadongoDriver
+					-in localhost:27017/logs.accessLogs
+					-out localhost:27017/summarize.userAgents
+					-mapper com.nifty.hadongo.mapred.countMapper
+					-reducer com.nifty.hadongo.mapred.countReducer
+					-key '{"ua": []}'  // the key is translated in each iteration for target Document
+					-query '{ts: {"$gt": 1293807600000}, {"$lt": 1294326000000}}'
+					-fields '{ua: 1}'</pre>
+				<p>You can do it for nested keys
+				<pre classs="sh_sh">hadoop jar hodongo com.nifty.hadongo.HadongoDriver
+					-in localhost:27017/logs.searchLogs
+					-out localhost:27017/summarize.userAgents
+					-mapper com.nifty.hadongo.mapred.countMapper
+					-reducer com.nifty.hadongo.mapred.countReducer
+					-key '{"spec.query": []}'
+					-query '{ts: {"$gt": 1293807600000}, {"$lt": 1294326000000}}'
+					-fields '{"spec.query": 1}'</pre>
+			</section>
+			
+			<section class="slide">
+				<h1>Hadongo releases us to develop Mapper/Reducer for each summarizing Job.</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>Only change options!</h1>
+			</section>
+			
+			<section class="slide">
+				<h2>Features</h2>
 				<ul>
-					<li>No SPOF by MongoDB. No Tortures of daemon management</li>
-					<li>Find data in a moment by MongoDB Query</li>
-					<li>Calculate Large Data by Hadoop Map/Reduce</li>
-					<li>Hadoop is rather "Large Data calculator" than "Large Data Storage". Monitering does not bother us.</li>
-					<li>Calculated Data is pre-filtered by MongoDB Query brefore Hadoop Map/Reduce.</li>
-				</ul>
-				<h3>Cons.</h3>
-				<ul>
-					<li>Rich Disk and Memory</li>
-					<li>In comparison to Hadoop HDFS, mongo-hadoop Map/Reduce is Low Performance. </li>
+					<li>use BSONWritable</li>
+					<li>use General Mapper</li>
+					<li>use Reducer class for Combinator</li>
+					<li>merge multipleInputResources (now pull requesting)</li>
+					<li>trim mappers for out of range chunks (now development)</li>
 				</ul>
 			</section>
 			
 			<section class="slide">
-				<h2>Tips</h2>
-				<h3>in mongo-hadoop, Calculated Data filtered before Hadoop Map/Reduce</h3>
-				<ul>
-					<li>The performance of mongo-hadoop's Map/Reduce is lower than Hadoop Map/Reduce.</li>
-					<li>In mongo-hadoop data is pre-filtered by MongoDB Query.</li>
-					<li>Thus, Hadoop Mapper Jobs do processes for less number of record (document).</li>
-				</ul>
-				<h3>BSON Decoder in mongo-java-driver</h3>
-				<ul>
-					<li>mongo-hadoop pays cost for BSON Decoding.</li>
-					<li>It is not small to calculate billion documents.</li>
-				</ul>
+				<h2>use BSONWritable: BSON/JSON is FREE</h2>
+				<h1>
+					We can use nested objects which includes Number, String, Boolean, Object, List in Java !!
+				</h1>
+				<p class="red">Notify: check type and existance of target values your own self.</p>
 			</section>
+			
 			<section class="slide">
-				<h2>Tips</h2>
-				<h3>Restricted Field improves Performance</h3>
-				<ul>
-					<li>Above reason, the smaller size of BSON document is, the faster BSONDecoder decode the BSON document</li>
-					<li>To restrict field of document is good to improve performance.</li>
-				</ul>
-				<h3>Reducer Class is also used Combiner Class</h3>
-				<ul>
-					<li>make reducer class extends <br>Reducer&lt;BSONObject, BSONWritable, BSONObject, BSONWritable&gt; </li>
-					<li>we use it also as a combiner class.</li>
-				</ul>
+				<h2>use General Mapper</h2>
+				<p>
+					"KeyGenerator" class: translating a JSON String injected as option to a map/reduce's key BSONWritable Object.<br>
+					
+				</p>
+				<p class="red">Notify: check type and existance of target values your own self.</p>
 			</section>
-
+			
+			<section class="slide">
+				<h2>use Reducer class for Combinator</h2>
+				<h1>
+					mapper&lt;Object, DBObject, BSONWritable, BSONWritable&gt;
+					reducer&lt;BSONWritable, BSONWritable, BSONWritable, BSONWritable&gt;
+				</h1>
+				<p class="red">Notify: check type and existance of target values your own self.</p>
+			</section>
+			
+			<section class="slide">
+				<h2>merge multipleInputResources (now pull requesting)</h2>
+				<h1>
+				</h1>
+				<p class="red">Notify: check type and existance of target values your own self.</p>
+			</section>
+			
+			<section class="slide">
+				<h2>trim mappers for out of range chunks (now development) </h2>
+				<h1>
+				</h1>
+				<p class="red">Notify: check type and existance of target values your own self.</p>
+			</section>
+			
 			<section class="slide">
 				<h2>Conclusion</h2>
 				<ul>
@@ -301,6 +326,8 @@ MongoConfigUtil.setOutputURI( conf, "mongodb://localhost/test.out" ); // set out
 				</ul>
 			</section>
 			
+
+
 			<section class="slide">
 				<h2>宣伝</h2>
 				<!--<iframe style="width: 100%; height:600px;" src="http://cloud.nifty.com/feature/"></iframe>-->
