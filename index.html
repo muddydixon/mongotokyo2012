@@ -25,7 +25,7 @@
 	<body>
 		<article class="deck-container">
 			<section class="slide">
-				<h1 style="text-align:left; font-size: 4.0em">
+				<h1 style="text-align:left; font-size: 3.0em">
 					mongo-hadoopで始める大規模ログ解析<br />〜低コストへの新たな道〜<br />
 					BigData Analysis with mongo-hadoop
 				</h1>
@@ -73,7 +73,7 @@
 			</section>
 			
 			<section class="slide">
-				<h1>一般人が死なない範囲で、ログを解析したりするシステムを頑張ってみた！</h1>
+				<h1>一般人が「#...nero」とか<br>tag付けられない範囲で<br>ログを解析したりする<br>システムを頑張ってみた！</h1>
 			</section>
 			
 			<section class="slide">
@@ -99,7 +99,7 @@
 			</section>
 			
 			<section class="slide">
-				<h1>All for healthy sleeping</h1>
+				<h1>All for <br> <span class="red">healthy sleeping</span></h1>
 			</section>
 			
 			<section class="slide" id="contents">
@@ -108,10 +108,8 @@
 					<li>MongoDB</li>
 					<li>Hadoop</li>
 					<li>mongo-hadoop</li>
-					<li>Architecture</li>
-					<li>mapReduce</li>
-					<li>Pros./Cons.</li>
-					<li>Tips</li>
+					<li>Advance</li>
+					<li>Conclusion</li>
 				</ol>
 			</section>
 			
@@ -200,8 +198,25 @@
 				<pre class="sh_java">MongoConfigUtil.setInputURI( conf, "mongodb://localhost/test.in" ); // set input host, db, collection
 MongoConfigUtil.setOutputURI( conf, "mongodb://localhost/test.out" ); // set output host, db, collection</pre>
 				<h3>Mapper</h3>
-				<pre class="sh_java">public void map( Object key, BSONObject value, Context context ) throws IOException, InterruptedException{
-  // get pair consisted of Object key and BSONObject value in MongoDB document</pre>
+				<pre class="sh_java">        public void map( Object key, BSONObject value, Context context ) throws IOException, InterruptedException{
+            if ( !didStart ){
+                log.info( "map starting, config: " + context.getConfiguration() );
+                didStart = true;
+            }
+
+            //            System.out.println( "key: " + key );
+            //            System.out.println( "value: " + value );
+
+            String str = value.get( "line" ).toString();
+            if ( str != null ){
+                final StringTokenizer itr = new StringTokenizer( str );
+                while ( itr.hasMoreTokens() ){
+                    word.set( itr.nextToken() );
+                    context.write( word, one );
+                }
+            }
+        }
+    }</pre>
 			</section>
 			
 			<section class="slide">
@@ -218,20 +233,86 @@ MongoConfigUtil.setOutputURI( conf, "mongodb://localhost/test.out" ); // set out
 				</ul>
 			</section>
 			
-			<!--
-					1. mongo-hadoop architecture
-					2. mongo-hadoop sample
-					3. mongo-hadoop merit
-					  3.1 Maintenance
-						3.2 Combinator
-						3.3 mongodb-derived BSON:
-					4. hadongo
-					  4.1 general driver
-						4.2 general mapper
-						4.3 combinator
-				-->
 			<section class="slide">
 				<h1>Advance</h1>
+			</section>
+			
+			<section class="slide">
+				<h1>Hadongo</h1>
+			</section>
+
+			<section class="slide">
+				<h1>Hadongo:<br>
+					Hadoop on MongoDB Library</h1>
+			</section>
+
+			<section class="slide">
+				<h2>Features</h2>
+				<ul>
+					<li>use BSONWritable</li>
+					<li>use Common Mapper</li>
+					<li>use Reducer class for Combinator</li>
+					<li>merge multipleInputResources (now pull requesting)</li>
+				</ul>
+			</section>
+			
+			<section class="slide">
+				<h2>use BSONWritable</h2>
+				<ul>
+					<li>BSONWritable is used as elements of Map/Reduce in Hadongo
+						<ul style="font-size: 1em">
+							<li>Mapper&lt;Object, BSONObject, BSONWritable, BSONWritable&gt;</li>
+							<li>Reducer&lt;BSONWritable, BSONWritable, BSONWritable, BSONWritable&gt;</li>
+						</ul>
+					</li>
+					<li>using BSON means below:
+						<ul style="font-size: 1em">
+							<li>We <span class="red">can use</span> "schemeless objects" consisted of String, Number, Boolean, Object, List</li>
+							<li>We <span class="red">should handle</span> them such as check existence, type validation.</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+			
+			<section class="slide">
+				<h2>use Common Mapper</h2>
+				<ul>
+					<li>In hadoop: <p style="font-size: 1em">we create Mappers/Reducers <span class="red">for distinct Data Resouces. </span></p></li>
+					<li>In hadongo: <p style="font-size: 1em">we create common Mappers/Reducers <span class="red">for distinct Processing Logics</span> and use it to analyze many valiations.</p></li>
+				</ul>
+				<p class="note">Note: check type and existance of target values your own self.</p>
+			</section>
+			
+			<section class="slide">
+				<h2>use Reducer class for Combinator</h2>
+				<ul>
+					<li>use BSONWritable in
+						<ul style="font-size: 1em">
+							<li>Mapper output&lt;BSONWritable key, BSONWritable val&gt;</li>
+							<li>Reducer input&lt;BSONWritable key, BSONWritable val&gt;</li>
+							<li>Reducer output&lt;BSONWritable key, BSONWritable val&gt;</li>
+						</ul>
+					</li>
+					<li>Therefore Reducer is used for <span class="red">Combinator Class</span></li>
+					<li>And finally reducing processing <span class="red">is distributed in Many Mapper Processes</span></li>
+				</ul>
+			</section>
+			
+			<section class="slide">
+				<h2>merge multipleInputResources (now pull requesting)</h2>
+				<ul>
+					<li>in MongoDB: cannot merge multiple input resouces (collection)</li>
+					<li>in practice: the case when <i>Logs</i> and <i>Users</i> are merged is asked</li>
+				</ul>
+				<pre class="sh_java">hadoop jar hadongo.jar com.nifty.hadongo.MergeDriver
+          -jobname mergeTest
+          -in '[{ns:"localhost:27017/multiple.in1", map:"com.nifty.hadongo.mapred.MergeMapper1"},
+                {ns: "localhost:27017/multiple.in2", query: {ts: {"$gt": 1293807600000}, {"$lt": 1294326000000}},
+                 map: "com.nifty.hadongo.mapred.MultipleMapper2"},
+                {ns: "localhost:27017/multiple.in3", map: "com.nifty.hadongo.mapred.MultipleMapper3"}]'
+          -reducer com.nifty.hadongo.mapred.MergeReducer
+          -out localhost:27017/multiple.mergeout</pre>
+				<p>plz merge @rit (@10gen) !!</p>
 			</section>
 			
 			<section class="slide">
@@ -242,24 +323,24 @@ MongoConfigUtil.setOutputURI( conf, "mongodb://localhost/test.out" ); // set out
 				<pre classs="sh_sh">hadoop jar hodongo com.nifty.hadongo.HadongoDriver
 					-in localhost:27017/logs.accessLogs
 					-out localhost:27017/summarize.userAgents
-					-mapper com.nifty.hadongo.mapred.countMapper
-					-reducer com.nifty.hadongo.mapred.countReducer
+					-mapper com.nifty.hadongo.mapred.CountMapper
+					-reducer com.nifty.hadongo.mapred.CountReducer
 					-key '{"ua": []}'  // the key is translated in each iteration for target Document
 					-query '{ts: {"$gt": 1293807600000}, {"$lt": 1294326000000}}'
 					-fields '{ua: 1}'</pre>
 				<p>You can do it for nested keys
 				<pre classs="sh_sh">hadoop jar hodongo com.nifty.hadongo.HadongoDriver
 					-in localhost:27017/logs.searchLogs
-					-out localhost:27017/summarize.userAgents
-					-mapper com.nifty.hadongo.mapred.countMapper
-					-reducer com.nifty.hadongo.mapred.countReducer
+					-out localhost:27017/summarize.searchWordRankings
+					-mapper com.nifty.hadongo.mapred.CountMapper
+					-reducer com.nifty.hadongo.mapred.CountReducer
 					-key '{"spec.query": []}'
 					-query '{ts: {"$gt": 1293807600000}, {"$lt": 1294326000000}}'
 					-fields '{"spec.query": 1}'</pre>
 			</section>
 			
 			<section class="slide">
-				<h1>Hadongo releases us to develop Mapper/Reducer for each summarizing Job.</h1>
+				<h1>Hadongo releases us <br>to develop Mapper/Reducer <br>for each summarizing Job.</h1>
 			</section>
 			
 			<section class="slide">
@@ -267,71 +348,43 @@ MongoConfigUtil.setOutputURI( conf, "mongodb://localhost/test.out" ); // set out
 			</section>
 			
 			<section class="slide">
-				<h2>Features</h2>
-				<ul>
-					<li>use BSONWritable</li>
-					<li>use General Mapper</li>
-					<li>use Reducer class for Combinator</li>
-					<li>merge multipleInputResources (now pull requesting)</li>
-					<li>trim mappers for out of range chunks (now development)</li>
-				</ul>
-			</section>
-			
-			<section class="slide">
-				<h2>use BSONWritable: BSON/JSON is FREE</h2>
-				<h1>
-					We can use nested objects which includes Number, String, Boolean, Object, List in Java !!
-				</h1>
-				<p class="red">Notify: check type and existance of target values your own self.</p>
-			</section>
-			
-			<section class="slide">
-				<h2>use General Mapper</h2>
-				<p>
-					"KeyGenerator" class: translating a JSON String injected as option to a map/reduce's key BSONWritable Object.<br>
-					
-				</p>
-				<p class="red">Notify: check type and existance of target values your own self.</p>
-			</section>
-			
-			<section class="slide">
-				<h2>use Reducer class for Combinator</h2>
-				<h1>
-					mapper&lt;Object, DBObject, BSONWritable, BSONWritable&gt;
-					reducer&lt;BSONWritable, BSONWritable, BSONWritable, BSONWritable&gt;
-				</h1>
-				<p class="red">Notify: check type and existance of target values your own self.</p>
-			</section>
-			
-			<section class="slide">
-				<h2>merge multipleInputResources (now pull requesting)</h2>
-				<h1>
-				</h1>
-				<p class="red">Notify: check type and existance of target values your own self.</p>
-			</section>
-			
-			<section class="slide">
-				<h2>trim mappers for out of range chunks (now development) </h2>
-				<h1>
-				</h1>
-				<p class="red">Notify: check type and existance of target values your own self.</p>
-			</section>
-			
-			<section class="slide">
 				<h2>Conclusion</h2>
 				<ul>
-					<li>No More Daemons</li>
-					<li>Hadoop is only Large Data Computer</li>
-					<li>We gotta both REST API and Large Data Mining System</li>
+					<li>Ad hoc query for <span class="red">API</span> via MongoDB</li>
+					<li>OLAP for <span class="red">survay</span> via MongoDB</li>
+					<li>Distributed Processing <span class="red">bigdata analysis</span> via Hadoop</li>
+					<li>Easily Works for <span class="red">non-big company</span> via MongoDB</li>
+					<li>Easy maintenance to some degree for <span class="red">non-experts</span> via MongoDB</li>
+					<li>Not Data loss for <span class="red">non-holiday works</span> via MongoDB</li>
 				</ul>
 			</section>
 			
-
-
+			<section class="slide">
+				<h1>All for <br> <span class="red">healthy sleeping</span></h1>
+			</section>
+			
+			<section class="slide">
+				<h1>Future works</h1>
+			</section>
+			
+			<section class="slide">
+				<h2>Future works</h2>
+				<ul>
+					<li>simplify BSONDecoder Class</li>
+					<li>trim mappers for out of range chunks (now development) </li>
+				</ul>
+			</section>
+			
 			<section class="slide">
 				<h2>宣伝</h2>
-				<!--<iframe style="width: 100%; height:600px;" src="http://cloud.nifty.com/feature/"></iframe>-->
+				<iframe style="width: 100%; height:600px;" src="http://cloud.nifty.com/feature/"></iframe>
 			</section>
+			
+			<section class="slide">
+				<h2>宣伝</h2>
+				<iframe style="width: 100%; height:600px;" src="http://tech.nifty.co.jp/party/2012/"></iframe>
+			</section>
+			
 			<section class="slide">
 				<h1>「ユーザの生活を楽しくする」<br>「より楽しくお金を払ってもらえる」<br>「ビジネスを加速させる」<br>DataMiner/DataScientist<br>を募集しています。<br><br>つ <a href="http://twitter.com/#!/muddydixon">@muddydixon</a></h2>
 			</section>

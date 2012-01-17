@@ -55,3 +55,12 @@ body .deck-container {
 .red {
 		color: #FF6666;
 }
+
+.note {
+		color: #FF0000;
+		padding-left: 30px !important;
+		font-size: 12pt !important;
+}
+.note:before {
+		content: "*"
+}
